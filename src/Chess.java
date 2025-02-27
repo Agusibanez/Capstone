@@ -1,83 +1,85 @@
 import java.util.*;
 
-/**
- * Chess Sorting Program
- * This program sorts a list of values using different sorting algorithms.
- * The values can be characters or numbers, and the sorting order depends on the specified color.
- */
 public class Chess {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Map<String, String> parameters = processParameters(args);
+        System.out.println("\nTipo: [" + parameters.get("t") + "]");
 
         if (!Validator.validateParameters(parameters)) {
-            printInvalidParameters(parameters);
+            System.out.println("Invalid input values.");
             return;
         }
 
-        // Extract values from parameters
-        String algorithm = parameters.get("a").toLowerCase();
-        String type = parameters.get("t").toLowerCase();
-        String color = parameters.get("c").toLowerCase();
+        String algorithm = parameters.get("a");
+        String type = parameters.get("t");
+        String color = parameters.get("c");
         int r = Integer.parseInt(parameters.get("r"));
-        int pause = Integer.parseInt(parameters.getOrDefault("s", "28"));
+        int s = Integer.parseInt(parameters.get("s"));
 
-        // Generate initial values
-        List<String> values = generateValues(type, r);
-        System.out.println("Type: [" + (type.equals("n") ? "Numeric" : "Character") + "]");
-        System.out.println("Values: " + values);
+        List<Integer> values = generateValues(type, r);
+        System.out.println("\nValores:             " + values);
 
-        // Measure execution time
-        long startTime = System.nanoTime();
-        Sorter<String> sorter = getSorter(algorithm, pause, color);
+        long startTime = System.currentTimeMillis();
+
+        Sorter<Integer> sorter = getSorter(algorithm, s, color);
         sorter.sort(values);
-        long totalTime = (System.nanoTime() - startTime) / 1_000_000 + ((long) (values.size() - 1) * pause);
 
-        System.out.println("Sorted: " + values);
-        System.out.println("Algorithm: " + sorter.getName());
-        System.out.println("Total time: " + totalTime + " ms");
+        long sortingTime = System.currentTimeMillis() - startTime;
+
+        long remainingTime = s - sortingTime;
+
+        if (remainingTime > 0) {
+            try {
+                Thread.sleep(remainingTime); //
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        long totalTime = System.currentTimeMillis() - startTime;
+
+        System.out.println("\nOrdenamiento: " + values);
+        System.out.println("\nAlgoritmo: " + sorter.getName());
+        System.out.println("Tiempo total: " + totalTime + " ms");
     }
 
+    // Processes command-line arguments into a key-value map
     private static Map<String, String> processParameters(String[] args) {
         Map<String, String> parameters = new HashMap<>();
         for (String arg : args) {
             if (arg.contains("=")) {
                 String[] parts = arg.split("=");
                 if (parts.length == 2) {
-                    parameters.put(parts[0], parts[1]);
+                    parameters.put(parts[0].toLowerCase(), parts[1].toLowerCase());
                 }
             }
         }
         return parameters;
     }
 
-    private static List<String> generateValues(String type, int r) {
-        List<String> values = new ArrayList<>();
+    // Generates values based on the specified type and range
+    private static <T> List<T> generateValues(String type, int r) {
+        List<T> values = new ArrayList<>();
         if (type.equals("c")) {
             for (char ch = 'a'; ch < 'a' + Math.min(r, 16); ch++) {
-                values.add(String.valueOf(ch));
+                values.add((T) Character.valueOf(ch));
             }
         } else {
             for (int i = 1; i <= Math.min(r, 16); i++) {
-                values.add(String.valueOf(i));
+                values.add((T) Integer.valueOf(i));
             }
         }
         Collections.shuffle(values);
         return values;
     }
 
-    private static Sorter<String> getSorter(String algorithm, int pause, String color) {
+    private static Sorter<Integer> getSorter(String algorithm, int s, String color) {
         return switch (algorithm) {
-            case "s" -> new SelectionSort<>(pause, color);
-            case "b" -> new BubbleSort<>(pause, color);
-            case "i" -> new InsertionSort<>(pause, color);
+            case "s" -> new SelectionSort<>(s, color);
+            case "b" -> new BubbleSort<>(s, color);
+            case "i" -> new InsertionSort<>(s, color);
             default -> throw new IllegalArgumentException("Unknown algorithm");
         };
-    }
-
-    private static void printInvalidParameters(Map<String, String> parameters) {
-        System.out.println("Invalid parameters:");
-        parameters.forEach((key, value) -> System.out.println(key + " = " + value));
-        System.out.println("Check your input and try again.");
     }
 }
 
@@ -90,19 +92,26 @@ abstract class Sorter<T extends Comparable<T>> {
         this.color = color;
     }
 
-    public abstract void sort(List<T> values) throws InterruptedException;
+    public abstract void sort(List<T> values);
     public abstract String getName();
 
+    // Compares two elements based on sorting order
     protected int compare(T a, T b) {
-        return color.equals("b") ? a.compareTo(b) : b.compareTo(a);
+        if (color.equalsIgnoreCase("b")) {
+            return a.compareTo(b);
+        } else {
+            return b.compareTo(a);
+        }
     }
 }
 
 class SelectionSort<T extends Comparable<T>> extends Sorter<T> {
     public SelectionSort(int pause, String color) { super(pause, color); }
+
     public String getName() { return "SelectionSort"; }
 
-    public void sort(List<T> values) throws InterruptedException {
+    public void sort(List<T> values) {
+        long startTime = System.currentTimeMillis();
         for (int i = 0; i < values.size() - 1; i++) {
             int minIndex = i;
             for (int j = i + 1; j < values.size(); j++) {
@@ -112,34 +121,55 @@ class SelectionSort<T extends Comparable<T>> extends Sorter<T> {
             }
             Collections.swap(values, i, minIndex);
             System.out.println(values);
-            Thread.sleep(pause);
+        }
+        long sortingTime = System.currentTimeMillis() - startTime;
+        long remainingTime = pause - sortingTime;
+
+        if (remainingTime > 0) {
+            try {
+                Thread.sleep(remainingTime);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }
 
 class BubbleSort<T extends Comparable<T>> extends Sorter<T> {
     public BubbleSort(int pause, String color) { super(pause, color); }
+
     public String getName() { return "BubbleSort"; }
 
-    public void sort(List<T> values) throws InterruptedException {
-        int n = values.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
+    public void sort(List<T> values) {
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < values.size() - 1; i++) {
+            for (int j = 0; j < values.size() - 1 - i; j++) {
                 if (compare(values.get(j), values.get(j + 1)) > 0) {
                     Collections.swap(values, j, j + 1);
                 }
             }
             System.out.println(values);
-            Thread.sleep(pause);
+        }
+        long sortingTime = System.currentTimeMillis() - startTime;
+        long remainingTime = pause - sortingTime;
+
+        if (remainingTime > 0) {
+            try {
+                Thread.sleep(remainingTime);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }
 
 class InsertionSort<T extends Comparable<T>> extends Sorter<T> {
     public InsertionSort(int pause, String color) { super(pause, color); }
+
     public String getName() { return "InsertionSort"; }
 
-    public void sort(List<T> values) throws InterruptedException {
+    public void sort(List<T> values) {
+        long startTime = System.currentTimeMillis();
         for (int i = 1; i < values.size(); i++) {
             T key = values.get(i);
             int j = i - 1;
@@ -149,7 +179,17 @@ class InsertionSort<T extends Comparable<T>> extends Sorter<T> {
             }
             values.set(j + 1, key);
             System.out.println(values);
-            Thread.sleep(pause);
+        }
+        long sortingTime = System.currentTimeMillis() - startTime;
+        long remainingTime = pause - sortingTime;
+
+        if (remainingTime > 0) {
+            try {
+                Thread.sleep(remainingTime);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }
+
