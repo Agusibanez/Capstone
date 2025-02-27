@@ -2,151 +2,154 @@ import java.util.*;
 
 /**
  * Chess Sorting Program
- * Este programa ordena una lista de valores utilizando diferentes algoritmos de ordenamiento.
- * Los valores pueden ser caracteres o números y el orden depende del color especificado.
+ * This program sorts a list of values using different sorting algorithms.
+ * The values can be characters or numbers, and the sorting order depends on the specified color.
  */
 public class Chess {
     public static void main(String[] args) throws InterruptedException {
-        Map<String, String> parametros = procesarParametros(args);
+        Map<String, String> parameters = processParameters(args);
 
-        if (!Validator.validarParametros(parametros)) {
-            imprimirParametrosInvalidos();
+        if (!Validator.validateParameters(parameters)) {
+            printInvalidParameters(parameters);
             return;
         }
 
-        // Extraer valores de los parámetros
-        String algoritmo = parametros.get("a").toLowerCase();
-        String tipo = parametros.get("t").toLowerCase();
-        String color = parametros.get("c").toLowerCase();
-        int r = Integer.parseInt(parametros.get("r"));
-        int pausa = Integer.parseInt(parametros.getOrDefault("s", "28"));
+        // Extract values from parameters
+        String algorithm = parameters.get("a").toLowerCase();
+        String type = parameters.get("t").toLowerCase();
+        String color = parameters.get("c").toLowerCase();
+        int r = Integer.parseInt(parameters.get("r"));
+        int pause = Integer.parseInt(parameters.getOrDefault("s", "28"));
 
-        // Generar valores iniciales
-        List<String> valores = generarValores(tipo, r);
-        System.out.println("Tipo: [" + (tipo.equals("n") ? "Numérico" : "Caracter") + "]");
-        System.out.println("Valores: " + valores);
+        // Generate initial values
+        List<String> values = generateValues(type, r);
+        System.out.println("Type: [" + (type.equals("n") ? "Numeric" : "Character") + "]");
+        System.out.println("Values: " + values);
 
-        // Medir tiempo de ejecución
-        long tiempoInicio = System.nanoTime();
-        ordenar(valores, algoritmo, pausa, color);
-        long tiempoTotal = (System.nanoTime() - tiempoInicio) / 1_000_000 + ((valores.size() - 1) * pausa);
+        // Measure execution time
+        long startTime = System.nanoTime();
+        Sorter<String> sorter = getSorter(algorithm, pause, color);
+        sorter.sort(values);
+        long totalTime = (System.nanoTime() - startTime) / 1_000_000 + ((long) (values.size() - 1) * pause);
 
-        System.out.println("Ordenamiento: " + valores);
-        System.out.println("Algoritmo: " + obtenerNombreAlgoritmo(algoritmo));
-        System.out.println("Tiempo total: " + tiempoTotal + " ms");
+        System.out.println("Sorted: " + values);
+        System.out.println("Algorithm: " + sorter.getName());
+        System.out.println("Total time: " + totalTime + " ms");
     }
 
-    /**
-     * Procesa los parámetros de entrada y los almacena en un Map.
-     */
-    private static Map<String, String> procesarParametros(String[] args) {
-        Map<String, String> parametros = new HashMap<>();
+    private static Map<String, String> processParameters(String[] args) {
+        Map<String, String> parameters = new HashMap<>();
         for (String arg : args) {
             if (arg.contains("=")) {
                 String[] parts = arg.split("=");
                 if (parts.length == 2) {
-                    parametros.put(parts[0], parts[1]);
+                    parameters.put(parts[0], parts[1]);
                 }
             }
         }
-        return parametros;
+        return parameters;
     }
 
-    /**
-     * Genera una lista de valores aleatorios basada en el tipo y la cantidad especificada.
-     */
-    private static List<String> generarValores(String tipo, int r) {
-        List<String> valores;
-        if (tipo.equals("c")) {
-            valores = Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p").subList(0, r);
+    private static List<String> generateValues(String type, int r) {
+        List<String> values = new ArrayList<>();
+        if (type.equals("c")) {
+            for (char ch = 'a'; ch < 'a' + Math.min(r, 16); ch++) {
+                values.add(String.valueOf(ch));
+            }
         } else {
-            valores = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16").subList(0, r);
+            for (int i = 1; i <= Math.min(r, 16); i++) {
+                values.add(String.valueOf(i));
+            }
         }
-        Collections.shuffle(valores);
-        return new ArrayList<>(valores);
+        Collections.shuffle(values);
+        return values;
     }
 
-    /**
-     * Ordena la lista de valores según el algoritmo especificado.
-     */
-    private static void ordenar(List<String> valores, String algoritmo, int pausa, String color) throws InterruptedException {
-        switch (algoritmo) {
-            case "s": selectionSort(valores, pausa, color); break;
-            case "b": bubbleSort(valores, pausa, color); break;
-            case "i": insertionSort(valores, pausa, color); break;
-            default: System.out.println("Algoritmo desconocido");
-        }
+    private static Sorter<String> getSorter(String algorithm, int pause, String color) {
+        return switch (algorithm) {
+            case "s" -> new SelectionSort<>(pause, color);
+            case "b" -> new BubbleSort<>(pause, color);
+            case "i" -> new InsertionSort<>(pause, color);
+            default -> throw new IllegalArgumentException("Unknown algorithm");
+        };
     }
 
-    /**
-     * Implementación del los algoritmos
-     */
-    private static void selectionSort(List<String> valores, int pausa, String color) throws InterruptedException {
-        for (int i = 0; i < valores.size() - 1; i++) {
+    private static void printInvalidParameters(Map<String, String> parameters) {
+        System.out.println("Invalid parameters:");
+        parameters.forEach((key, value) -> System.out.println(key + " = " + value));
+        System.out.println("Check your input and try again.");
+    }
+}
+
+abstract class Sorter<T extends Comparable<T>> {
+    protected int pause;
+    protected String color;
+
+    public Sorter(int pause, String color) {
+        this.pause = pause;
+        this.color = color;
+    }
+
+    public abstract void sort(List<T> values) throws InterruptedException;
+    public abstract String getName();
+
+    protected int compare(T a, T b) {
+        return color.equals("b") ? a.compareTo(b) : b.compareTo(a);
+    }
+}
+
+class SelectionSort<T extends Comparable<T>> extends Sorter<T> {
+    public SelectionSort(int pause, String color) { super(pause, color); }
+    public String getName() { return "SelectionSort"; }
+
+    public void sort(List<T> values) throws InterruptedException {
+        for (int i = 0; i < values.size() - 1; i++) {
             int minIndex = i;
-            for (int j = i + 1; j < valores.size(); j++) {
-                if (comparar(valores.get(j), valores.get(minIndex), color) < 0) {
+            for (int j = i + 1; j < values.size(); j++) {
+                if (compare(values.get(j), values.get(minIndex)) < 0) {
                     minIndex = j;
                 }
             }
-            Collections.swap(valores, i, minIndex);
-            System.out.println(valores);
-            Thread.sleep(pausa);
+            Collections.swap(values, i, minIndex);
+            System.out.println(values);
+            Thread.sleep(pause);
         }
     }
+}
 
-    private static void bubbleSort(List<String> valores, int pausa, String color) throws InterruptedException {
-        int n = valores.size();
+class BubbleSort<T extends Comparable<T>> extends Sorter<T> {
+    public BubbleSort(int pause, String color) { super(pause, color); }
+    public String getName() { return "BubbleSort"; }
+
+    public void sort(List<T> values) throws InterruptedException {
+        int n = values.size();
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
-                if (comparar(valores.get(j), valores.get(j + 1), color) > 0) {
-                    Collections.swap(valores, j, j + 1);
+                if (compare(values.get(j), values.get(j + 1)) > 0) {
+                    Collections.swap(values, j, j + 1);
                 }
             }
-            System.out.println(valores);
-            Thread.sleep(pausa);
+            System.out.println(values);
+            Thread.sleep(pause);
         }
     }
+}
 
-    private static void insertionSort(List<String> valores, int pausaBase, String color) throws InterruptedException {
-        for (int i = 1; i < valores.size(); i++) {
-            String key = valores.get(i);
+class InsertionSort<T extends Comparable<T>> extends Sorter<T> {
+    public InsertionSort(int pause, String color) { super(pause, color); }
+    public String getName() { return "InsertionSort"; }
+
+    public void sort(List<T> values) throws InterruptedException {
+        for (int i = 1; i < values.size(); i++) {
+            T key = values.get(i);
             int j = i - 1;
-
-            while (j >= 0 && comparar(valores.get(j), key, color) > 0) {
-                valores.set(j + 1, valores.get(j));
+            while (j >= 0 && compare(values.get(j), key) > 0) {
+                values.set(j + 1, values.get(j));
                 j--;
             }
-            valores.set(j + 1, key);
-
-            int pausa = (int) (pausaBase * Math.pow(valores.size() / 8.0, 1.215));
-            System.out.println("Esperando " + pausa + "ms...");
-            Thread.sleep(pausa);
-            System.out.println(valores);
+            values.set(j + 1, key);
+            System.out.println(values);
+            Thread.sleep(pause);
         }
-    }
-
-    /**
-     * Compara dos valores considerando el tipo de dato y el color.
-     */
-    private static int comparar(String a, String b, String color) {
-        try {
-            int numA = Integer.parseInt(a);
-            int numB = Integer.parseInt(b);
-            return color.equals("b") ? Integer.compare(numA, numB) : Integer.compare(numB, numA);
-        } catch (NumberFormatException e) {
-            return color.equals("b") ? a.compareTo(b) : b.compareTo(a);
-        }
-    }
-
-    private static void imprimirParametrosInvalidos() {
-        System.out.println("Ordenamiento: Inválido");
-        System.out.println("Tipo: Inválido");
-        System.out.println("Valores: []");
-        System.out.println("Valores Inválidos");
-    }
-
-    private static String obtenerNombreAlgoritmo(String algoritmo) {
-        return Map.of("s", "SelectionSort", "b", "BubbleSort", "i", "InsertionSort").getOrDefault(algoritmo, "Desconocido");
     }
 }
