@@ -1,3 +1,5 @@
+package game;
+
 import java.util.Set;
 import java.util.Map;
 
@@ -9,7 +11,7 @@ class Validator {
 
     public static boolean validateParameters(Map<String, String> parameters) {
         if (!parameters.containsKey("a")) {
-            System.out.println("\u274C Error: Missing parameter a, or use message from evaluation 4.");
+            System.out.println("\u274C Error: Missing parameter a.");
             return false;
         }
         if (!VALID_ALGORITHMS.contains(parameters.get("a"))) {
@@ -41,7 +43,7 @@ class Validator {
             return false;
         }
         if (!parameters.containsKey("s")) {
-            System.out.println("\u274C Error: Missing parameter s. A default value can be assigned if the user does not enter it.");
+            System.out.println("\u274C Error: Missing parameter s.");
             return false;
         }
         if (!parameters.get("s").matches("\\d+") || Integer.parseInt(parameters.get("s")) < 100 || Integer.parseInt(parameters.get("s")) > 1000) {

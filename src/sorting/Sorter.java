@@ -1,6 +1,9 @@
-import java.util.List;
+package sorting;
 
-abstract class Sorter<T extends Comparable<T>> {
+import java.util.List;
+import board.Board;
+
+public abstract class Sorter<T extends Comparable<T>> {
     protected int pause;
     protected String color;
 
@@ -9,15 +12,14 @@ abstract class Sorter<T extends Comparable<T>> {
         this.color = color;
     }
 
-    public abstract void sort(List<T> values);
+    public abstract void sort(List<T> values, Board board); // Acepta Board como parámetro
     public abstract String getName();
 
-    // Compares two elements based on sorting order
     protected int compare(T a, T b) {
         if (color.equalsIgnoreCase("b")) {
-            return a.compareTo(b);
+            return a.compareTo(b); // Orden ascendente
         } else {
-            return b.compareTo(a);
+            return b.compareTo(a); // Orden descendente
         }
     }
 }
