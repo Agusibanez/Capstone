@@ -3,6 +3,7 @@ package game;
 import java.util.Set;
 import java.util.Map;
 
+
 class Validator {
     private static final Set<String> VALID_ALGORITHMS = Set.of("s", "b", "i");
     private static final Set<String> VALID_TYPES = Set.of("n", "c");

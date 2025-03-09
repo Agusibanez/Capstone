@@ -1,4 +1,4 @@
-package board;
+package Piece;
 
 class King extends Piece {
     public King(String color) {
@@ -26,7 +26,7 @@ class Bishop extends Piece {
 
 class Horse extends Piece {
     public Horse(String color) {
-        super(color, PieceType.KNIGHT);
+        super(color, PieceType.HORSE);
     }
 }
 

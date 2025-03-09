@@ -1,6 +1,6 @@
-package board;
+package Piece;
 
-public abstract class Piece implements Comparable<Piece> {
+public class Piece implements Comparable<Piece> {
     protected String color;
     protected PieceType type;
 
@@ -24,7 +24,6 @@ public abstract class Piece implements Comparable<Piece> {
 
     @Override
     public int compareTo(Piece other) {
-        // Ordenar primero por tipo de pieza y luego por color
         int typeComparison = this.type.compareTo(other.type);
         if (typeComparison != 0) {
             return typeComparison;

@@ -1,7 +1,7 @@
-package board;
+package Piece;
 
 public enum PieceType {
-    KING("K"), QUEEN("Q"), ROOK("R"), BISHOP("B"), KNIGHT("N"), PAWN("P");
+    KING("K"), QUEEN("Q"), ROOK("R"), BISHOP("B"), HORSE("N"), PAWN("P");
 
     private final String symbolCode;
 

@@ -1,6 +1,6 @@
 package sorting;
 
-import board.Piece;
+import Piece.Piece;
 
 public class SorterFactory {
     public static Sorter<Piece> getSorter(String algorithm, int s, String color) {

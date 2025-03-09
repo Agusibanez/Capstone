@@ -1,6 +1,8 @@
 package sorting;
 
 import java.util.List;
+
+import Piece.Piece;
 import board.Board;
 
 public class InsertionSort<T extends Comparable<T>> extends Sorter<T> {
@@ -20,18 +22,15 @@ public class InsertionSort<T extends Comparable<T>> extends Sorter<T> {
             T key = values.get(i);
             int j = i - 1;
 
-            // Mueve los elementos mayores que `key` una posición adelante
             while (j >= 0 && compare(values.get(j), key) > 0) {
                 values.set(j + 1, values.get(j));
                 j--;
             }
-            values.set(j + 1, key); // Coloca `key` en su posición correcta
+            values.set(j + 1, key);
 
-            // Actualiza el tablero y muestra el estado actual
-            board.placePieces((List<board.Piece>) values);
+            board.placePieces((List<Piece>) values, color, values.size()); // Ajusta los parámetros
             board.printBoard();
 
-            // Aplica el delay
             try {
                 Thread.sleep(pause);
             } catch (InterruptedException e) {

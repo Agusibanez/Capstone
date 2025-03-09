@@ -1,7 +1,8 @@
 package sorting;
 
-import java.util.Collections;
 import java.util.List;
+
+import Piece.Piece;
 import board.Board;
 
 public class SelectionSort<T extends Comparable<T>> extends Sorter<T> {
@@ -17,18 +18,28 @@ public class SelectionSort<T extends Comparable<T>> extends Sorter<T> {
     @Override
     public void sort(List<T> values, Board board) {
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < values.size() - 1; i++) {
+        int n = values.size();
+
+        for (int i = 0; i < n - 1; i++) {
             int minIndex = i;
-            for (int j = i + 1; j < values.size(); j++) {
+            for (int j = i + 1; j < n; j++) {
                 if (compare(values.get(j), values.get(minIndex)) < 0) {
-                    minIndex = j; // Encuentra el índice del mínimo
+                    minIndex = j;
                 }
             }
-            Collections.swap(values, i, minIndex); // Intercambia elementos
-            board.placePieces((List<board.Piece>) values); // Actualiza el tablero
-            board.printBoard(); // Muestra el tablero
+
+
+            T temp = values.get(minIndex);
+            values.set(minIndex, values.get(i));
+            values.set(i, temp);
+
+
+            board.placePieces((List<Piece>) values, color, values.size());
+            board.printBoard();
+
+
             try {
-                Thread.sleep(pause); // Aplica el delay
+                Thread.sleep(pause);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
