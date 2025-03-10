@@ -41,11 +41,10 @@ public class PieceGenerator {
                 pieces.add(new Rook(color));
                 break;
             case 10:
+
                 for (int i = 0; i < 8; i++) {
                     pieces.add(new Pawn(color));
                 }
-                pieces.add(new King(color));
-                pieces.add(new Queen(color));
                 break;
             case 16:
                 for (int i = 0; i < 8; i++) {

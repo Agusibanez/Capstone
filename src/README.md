@@ -63,6 +63,6 @@ Example usage:
 java ChessGame -a b -t n -c b -r 8 -s 1000
 ```
 ## diagram
-![img_2.png](img/img_2.png)
+![img.png](img/img.png)
 
-![img_3.png](img/img_3.png)
+![img_1.png](img/img_1.png)

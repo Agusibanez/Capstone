@@ -15,6 +15,7 @@ class Validator {
             System.out.println("\u274C Error: Missing parameter a.");
             return false;
         }
+        
 
         if (!VALID_ALGORITHMS.contains(parameters.get("a"))) {
             System.out.println("\u274C Error: Invalid value for algorithm selection.");

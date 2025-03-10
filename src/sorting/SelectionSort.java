@@ -45,6 +45,6 @@ public class SelectionSort<T extends Comparable<T>> extends Sorter<T> {
             }
         }
         long sortingTime = System.currentTimeMillis() - startTime;
-        System.out.println("Tiempo transcurrido: " + sortingTime + " ms");
+        System.out.println("transcure time : " + sortingTime + " ms");
     }
 }

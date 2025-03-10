@@ -5,6 +5,14 @@ import board.Board;
 import java.util.Map;
 
 public class ChessGame {
+    /**
+     * Entry point for the game.
+     *
+     * This method processes the command line parameters, validates them, and then
+     * starts the game. It prints out the initial and sorted boards.
+     *
+     * @param args command line parameters
+     */
     public static void main(String[] args) {
         Map<String, String> parameters = ParameterProcessor.processParameters(args);
         for(Map.Entry<String, String> entry : parameters.entrySet()) {

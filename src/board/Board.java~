@@ -52,8 +52,8 @@ public class Board {
                     }
                 } else {
                     for (int i = 0; i < 8; i++) {
-                        board[7][i] = pieces.get(8 + i);
-                        board[6][i] = pieces.get(i);
+                        board[6][i] = pieces.get(8 + i);
+                        board[7][i] = pieces.get(i);
                     }
                 }
             }
