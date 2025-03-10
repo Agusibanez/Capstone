@@ -1,12 +1,18 @@
 package board;
 
 import Piece.Piece;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
     private Piece[][] board = new Piece[8][8];
+    private String type;
+
+    public Board(String type) {
+        this.type = type;
+    }
 
     public void placePieces(List<Piece> pieces, String color, int numberOfPieces) {
 
@@ -59,6 +65,7 @@ public class Board {
             }
             default -> throw new IllegalArgumentException("Número de piezas no soportado.");
         }
+
     }
 
     public List<Piece> getPieces() {
@@ -84,6 +91,9 @@ public class Board {
             }
             System.out.println();
         }
-        System.out.println("  a b c d e f g h");
+        System.out.println("  a b c d e f g h\n");
+        Utils.printList(getPieces(), type);
+
     }
+
 }

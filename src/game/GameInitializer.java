@@ -11,12 +11,13 @@ public class GameInitializer {
         String type = parameters.get("t");
         String color = parameters.get("c");
         int r = Integer.parseInt(parameters.get("r"));
+        String t = parameters.get("t");
 
         String fullColor = color.equalsIgnoreCase("b") ? "black" : "white";
 
         List<Piece> pieces = PieceGenerator.generatePieces(fullColor, type, r);
 
-        Board board = new Board();
+        Board board = new Board(t);
         board.placePieces(pieces, color, r);
 
         return board;

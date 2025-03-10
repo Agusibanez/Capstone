@@ -9,6 +9,14 @@ public class Piece implements Comparable<Piece> {
         this.type = type;
     }
 
+    public String getCharValue() {
+        return type.getCharValue();
+    }
+
+    public int getValue() {
+        return type.getValue();
+    }
+
     public String getSymbol() {
         return type.getSymbolCode();
     }

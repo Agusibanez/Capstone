@@ -8,6 +8,7 @@ public class PieceGenerator {
     public static List<Piece> generatePieces(String color, String listType, int r) {
         List<Piece> pieces = new ArrayList<>();
 
+
         switch (r) {
             case 1:
                 pieces.add(new King(color));
@@ -19,45 +20,55 @@ public class PieceGenerator {
             case 4:
                 pieces.add(new King(color));
                 pieces.add(new Queen(color));
-                pieces.add(new Bishop(color));
-                pieces.add(new Bishop(color));
+                pieces.add(new Bishop1(color));
+                pieces.add(new Bishop2(color));
                 break;
             case 6:
                 pieces.add(new King(color));
                 pieces.add(new Queen(color));
-                pieces.add(new Bishop(color));
-                pieces.add(new Bishop(color));
-                pieces.add(new Horse(color));
-                pieces.add(new Horse(color));
+                pieces.add(new Bishop1(color));
+                pieces.add(new Bishop2(color));
+                pieces.add(new Horse1(color));
+                pieces.add(new Horse2(color));
                 break;
             case 8:
                 pieces.add(new King(color));
                 pieces.add(new Queen(color));
-                pieces.add(new Bishop(color));
-                pieces.add(new Bishop(color));
-                pieces.add(new Horse(color));
-                pieces.add(new Horse(color));
-                pieces.add(new Rook(color));
-                pieces.add(new Rook(color));
+                pieces.add(new Bishop1(color));
+                pieces.add(new Bishop2(color));
+                pieces.add(new Horse1(color));
+                pieces.add(new Horse2(color));
+                pieces.add(new Rook1(color));
+                pieces.add(new Rook2(color));
                 break;
             case 10:
+                pieces.add(new Pawn1(color));
+                pieces.add(new Pawn2(color));
+                pieces.add(new Pawn3(color));
+                pieces.add(new Pawn4(color));
+                pieces.add(new Pawn5(color));
+                pieces.add(new Pawn6(color));
+                pieces.add(new Pawn7(color));
+                pieces.add(new Pawn8(color));
 
-                for (int i = 0; i < 8; i++) {
-                    pieces.add(new Pawn(color));
-                }
                 break;
             case 16:
-                for (int i = 0; i < 8; i++) {
-                    pieces.add(new Pawn(color));
-                }
                 pieces.add(new King(color));
                 pieces.add(new Queen(color));
-                pieces.add(new Bishop(color));
-                pieces.add(new Bishop(color));
-                pieces.add(new Horse(color));
-                pieces.add(new Horse(color));
-                pieces.add(new Rook(color));
-                pieces.add(new Rook(color));
+                pieces.add(new Bishop1(color));
+                pieces.add(new Bishop2(color));
+                pieces.add(new Horse1(color));
+                pieces.add(new Horse2(color));
+                pieces.add(new Rook1(color));
+                pieces.add(new Rook2(color));
+                pieces.add(new Pawn1(color));
+                pieces.add(new Pawn2(color));
+                pieces.add(new Pawn3(color));
+                pieces.add(new Pawn4(color));
+                pieces.add(new Pawn5(color));
+                pieces.add(new Pawn6(color));
+                pieces.add(new Pawn7(color));
+                pieces.add(new Pawn8(color));
                 break;
             default:
                 throw new IllegalArgumentException("Valor de r no válido.");
@@ -66,7 +77,7 @@ public class PieceGenerator {
         if (listType.equalsIgnoreCase("C")) {
             List<Piece> symbolPieces = new ArrayList<>();
             for (Piece piece : pieces) {
-                symbolPieces.add(new SymbolPiece(piece.getSymbol()));
+                symbolPieces.add(piece);
             }
             pieces = symbolPieces;
         }
